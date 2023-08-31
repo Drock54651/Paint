@@ -1,3 +1,7 @@
 from tkinter import Canvas
-from settings import * 
+from settings import *
 
+class DrawSurface(Canvas):
+    def __init__(self, parent):
+        super().__init__(parent, bg = CANVS_BG, bd = 0, highlightthickness = 0, relief = 'ridge')
+        self.pack(expand = True, fill = 'both')
