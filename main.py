@@ -11,9 +11,16 @@ class App(ctk.CTk):
         self.iconbitmap('empty.ico')
         ctk.set_appearance_mode('light')
 
+        #* DATA
+        self.color_string = ctk.StringVar(value = '000') #! RGB
+        self.brush_float = ctk.DoubleVar(value = 0.2) #! Size of brush, can only be between 0.2 -> 1
 
+
+
+
+        
         #* WIDGETS
-        DrawSurface(self)
+        DrawSurface(self, self.color_string, self.brush_float)
 
 
         #* RUN

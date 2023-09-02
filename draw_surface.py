@@ -2,6 +2,49 @@ from tkinter import Canvas
 from settings import *
 
 class DrawSurface(Canvas):
-    def __init__(self, parent):
+    def __init__(self, parent, color_string, brush_float):
         super().__init__(parent, bg = CANVS_BG, bd = 0, highlightthickness = 0, relief = 'ridge')
         self.pack(expand = True, fill = 'both')
+
+
+        #* DATA
+        self.color_string = color_string
+        self.brush_float = brush_float
+        self.allow_draw = False
+
+        #* INPUT
+        self.bind('<Motion>', self.draw) #! Captures mouse movement
+        self.bind('<Button>', self.activate_draw)
+        self.bind('<ButtonRelease>', self.deactivate_draw)
+
+        #* Start Pos
+        self.old_x = None
+        self.old_y = None
+    
+    #* METHODS
+
+    def draw(self, event):
+        if self.old_x and self.old_y:
+
+            if self.allow_draw:
+                #TODO: get start and end position tuples
+                self.create_brush_line((self.old_x, self.old_y), (event.x, event.y ))
+            
+
+        self.old_x = event.x
+        self.old_y = event.y
+
+    def create_brush_line(self, start, end):
+        brush_size = self.brush_float.get() * 10 ** 2
+        self.create_line(start, end,  fill = 'black', width = brush_size, capstyle = 'round') #! capstyle makes it so it doesnt look like eyebrows
+
+    def activate_draw(self, event):
+        self.allow_draw = True
+        self.create_brush_line((event.x, event.y), (event.x + 1, event.y + 1))
+
+    def deactivate_draw(self, event):
+        self.allow_draw = False
+
+        #TODO: fix the bug where a line is drawn between unconnected points
+        self.old_x = None
+        self.old_y = None
