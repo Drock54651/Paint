@@ -36,7 +36,7 @@ class DrawSurface(Canvas):
 
     def create_brush_line(self, start, end):
         brush_size = self.brush_float.get() * 10 ** 2
-        self.create_line(start, end,  fill = 'black', width = brush_size, capstyle = 'round') #! capstyle makes it so it doesnt look like eyebrows
+        self.create_line(start, end,  fill = f'#{self.color_string.get()}', width = brush_size, capstyle = 'round') #! capstyle makes it so it doesnt look like eyebrows
 
     def activate_draw(self, event):
         self.allow_draw = True

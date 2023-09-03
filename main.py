@@ -21,7 +21,7 @@ class App(ctk.CTk):
         
         #* WIDGETS
         DrawSurface(self, self.color_string, self.brush_float)
-        ToolPanel(self, self.brush_float)
+        ToolPanel(self, self.brush_float, self.color_string)
 
         #* MOUSE WHEEL EVENT
         self.bind('<MouseWheel>', self.adjust_brush_size)
