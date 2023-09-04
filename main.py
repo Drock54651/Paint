@@ -3,6 +3,8 @@ from settings import *
 import customtkinter as ctk
 from draw_surface import DrawSurface
 from tool_panel import ToolPanel
+
+
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
