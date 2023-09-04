@@ -6,6 +6,14 @@ COLORS = (
 	('004', '009', '00B','00F'),
 	('F0F', 'FF0', '0FF','F66'),
 	('94B', 'F90', '088','EAA'))
+HOVER_COLORS = (
+	('111', 'AAA', 'CCC','EEE'),
+	('511', 'A11', 'C11','F11'),
+	('151', '1A1', '1C1','1F1'),
+	('115', '11A', '11C','11F'),
+	('F1F', 'FF1', '1FF','F77'),
+	('A5C', 'FA1', '199','FBB'))
+
 COLOR_COLS = len(COLORS[0])
 COLOR_ROWS = len(COLORS)
 

@@ -54,18 +54,19 @@ class ColorPanel(ctk.CTkFrame):
             for col in range(COLOR_COLS):
                 # ctk.CTkButton(self, text = '', fg_color = f'#{COLORS[row][col]}').grid(row = row, column = col)
                 color = COLORS[row][col]
-                ColorFieldButton(self, row, col, color, self.pick_color)
+                hover_color = HOVER_COLORS[row][col]
+                ColorFieldButton(self, row, col, hover_color, color, self.pick_color)
 
     def pick_color(self, color):
         self.color_string.set(color)
 
 #TODO create and place buttons with the respective colors
 class ColorFieldButton(ctk.CTkButton):
-    def __init__(self, parent, row, col, color, pick_color):
+    def __init__(self, parent, row, col, hover_color, color, pick_color):
         super().__init__(parent, 
                          text = '', 
                          fg_color = f'#{color}',
-                         hover_color = f'#{color}', 
+                         hover_color = f'#{hover_color}', 
                          corner_radius = 1,
                          command = self.click_handler)
         
