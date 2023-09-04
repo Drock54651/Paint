@@ -28,8 +28,8 @@ class DrawSurface(Canvas):
         if self.old_x and self.old_y:
 
             if self.allow_draw:
-                #TODO: get start and end position tuples
-                self.create_brush_line((self.old_x, self.old_y), (event.x, event.y ))
+                
+                self.create_brush_line((self.old_x, self.old_y), (event.x, event.y )) 
             
 
         self.old_x = event.x
@@ -38,7 +38,7 @@ class DrawSurface(Canvas):
     def create_brush_line(self, start, end):
         brush_size = self.brush_float.get() * 10 ** 2
         color = f'#{self.color_string.get()}' if not self.erase_bool.get() else '#FFF' #! if erase bool is false, get color, else make color white
-        self.create_line(start, end,  fill = color, width = brush_size, capstyle = 'round') #! capstyle makes it so it doesnt look like eyebrows
+        self.create_line(start, end,  fill = color, width = brush_size, capstyle = 'round') #! capstyle prevents weird visual artifacts
 
     def activate_draw(self, event):
         self.allow_draw = True
@@ -47,6 +47,6 @@ class DrawSurface(Canvas):
     def deactivate_draw(self, event):
         self.allow_draw = False
 
-        #TODO: fix the bug where a line is drawn between unconnected points
+        
         self.old_x = None
         self.old_y = None

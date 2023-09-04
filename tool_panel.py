@@ -72,8 +72,7 @@ class BrushPreview(Canvas):
         self.delete('all') #! clears previous drawn ovals 
         
 
-        #TODO: update color
-        #TODO: if the eraser is active the color should be the same as the BRUSH_PREVIEW_BG and there should be a black circle
+        
         color = f'#{self.color_string.get()}' if not self.erase_bool.get() else BRUSH_PREVIEW_BG
         outline_color = f'#{self.color_string.get()}' if not self.erase_bool.get() else 'black'
 
@@ -115,7 +114,7 @@ class ColorPanel(ctk.CTkFrame):
     def pick_color(self, color):
         self.color_string.set(color)
 
-#TODO create and place buttons with the respective colors
+
 class ColorFieldButton(ctk.CTkButton):
     def __init__(self, parent, row, col, hover_color, color, pick_color, erase_bool):
         super().__init__(parent, 
@@ -179,7 +178,7 @@ class ColorSliderPanel(ctk.CTkFrame):
         self.erase_bool.set(False)
 
     def set_color(self, *args):
-        #TODO: make it so when clicking on color, it also updates the slider values
+        
         self.r_int.set(COLOR_RANGE.index(self.color_string.get()[0])) #! Gets the index from the list
         self.g_int.set(COLOR_RANGE.index(self.color_string.get()[1])) 
         self.b_int.set(COLOR_RANGE.index(self.color_string.get()[2])) 
@@ -194,7 +193,7 @@ class Button(ctk.CTkButton):
 
 
 
-#TODO: Create the 3 buttons
+
 class DrawBrushButton(Button):
     def __init__(self, parent, erase_bool):
         super().__init__(parent, image_path = 'images/brush.png', col = 0, func = self.activate_brush)
