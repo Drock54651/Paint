@@ -2,7 +2,7 @@ from tkinter import Canvas
 from settings import *
 
 class DrawSurface(Canvas):
-    def __init__(self, parent, color_string, brush_float):
+    def __init__(self, parent, color_string, brush_float, erase_bool):
         super().__init__(parent, bg = CANVS_BG, bd = 0, highlightthickness = 0, relief = 'ridge')
         self.pack(expand = True, fill = 'both')
 
@@ -11,6 +11,7 @@ class DrawSurface(Canvas):
         self.color_string = color_string
         self.brush_float = brush_float
         self.allow_draw = False
+        self.erase_bool = erase_bool
 
         #* INPUT
         self.bind('<Motion>', self.draw) #! Captures mouse movement
@@ -36,7 +37,8 @@ class DrawSurface(Canvas):
 
     def create_brush_line(self, start, end):
         brush_size = self.brush_float.get() * 10 ** 2
-        self.create_line(start, end,  fill = f'#{self.color_string.get()}', width = brush_size, capstyle = 'round') #! capstyle makes it so it doesnt look like eyebrows
+        color = f'#{self.color_string.get()}' if not self.erase_bool.get() else '#FFF' #! if erase bool is false, get color, else make color white
+        self.create_line(start, end,  fill = color, width = brush_size, capstyle = 'round') #! capstyle makes it so it doesnt look like eyebrows
 
     def activate_draw(self, event):
         self.allow_draw = True

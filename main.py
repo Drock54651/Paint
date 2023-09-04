@@ -15,16 +15,19 @@ class App(ctk.CTk):
 
         #* DATA
         self.color_string = ctk.StringVar(value = '000') #! RGB
-        self.brush_float = ctk.DoubleVar(value = 1) #! Size of brush, can only be between 0.2 -> 1
+        self.brush_float = ctk.DoubleVar(value = .5) #! Size of brush, can only be between 0.2 -> 1
+        self.erase_bool = ctk.BooleanVar()
 
 
 
 
         
         #* WIDGETS
-        DrawSurface(self, self.color_string, self.brush_float)
-        ToolPanel(self, self.brush_float, self.color_string)
+        self.draw_surface = DrawSurface(self, self.color_string, self.brush_float, self.erase_bool)
+        ToolPanel(self, self.brush_float, self.color_string, self.erase_bool, self.clear_canvas)
+        self.erase_bool.set(False)
 
+        
         #* MOUSE WHEEL EVENT
         self.bind('<MouseWheel>', self.adjust_brush_size)
 
@@ -50,6 +53,8 @@ class App(ctk.CTk):
 
         self.brush_float.set(new_brush_size)
 
+    def clear_canvas(self):
+        self.draw_surface.delete('all')
 
 
 

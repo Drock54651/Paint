@@ -1,9 +1,13 @@
 
 import customtkinter as ctk
 from settings import *
+from PIL import Image
+
+#! All the erase bool stuff makes it so clicking anything color related automatically switches to brush mode
+
 
 class ToolPanel(ctk.CTkToplevel):
-    def __init__(self, parent, brush_float, color_string):
+    def __init__(self, parent, brush_float, color_string, erase_bool, clear_canvas):
         super().__init__()
 
         self.geometry('200x300')
@@ -15,6 +19,7 @@ class ToolPanel(ctk.CTkToplevel):
         self.parent = parent
 
 
+
         #* LAYOUT
         self.rowconfigure(0, weight = 2, uniform = 'a')
         self.rowconfigure(1, weight = 3, uniform = 'a')
@@ -23,8 +28,11 @@ class ToolPanel(ctk.CTkToplevel):
 
         #* WIDGETS
         BrushSizeSlider(self, brush_float) 
-        ColorPanel(self, color_string)
-        ColorSliderPanel(self, color_string)
+        ColorPanel(self, color_string, erase_bool)
+        ColorSliderPanel(self, color_string, erase_bool)
+        DrawBrushButton(self, erase_bool)
+        EraserButton(self, erase_bool)
+        ClearAllButton(self, clear_canvas, erase_bool)
 
     def close_app(self):
         self.parent.quit()
@@ -39,7 +47,7 @@ class BrushSizeSlider(ctk.CTkFrame):
 
 
 class ColorPanel(ctk.CTkFrame):
-    def __init__(self, parent, color_string):
+    def __init__(self, parent, color_string, erase_bool):
         super().__init__(parent, fg_color = 'transparent')
         self.grid(row = 1, column = 0, columnspan = 3, pady = 5, padx = 5)
         self.color_string = color_string
@@ -55,14 +63,14 @@ class ColorPanel(ctk.CTkFrame):
                 # ctk.CTkButton(self, text = '', fg_color = f'#{COLORS[row][col]}').grid(row = row, column = col)
                 color = COLORS[row][col]
                 hover_color = HOVER_COLORS[row][col]
-                ColorFieldButton(self, row, col, hover_color, color, self.pick_color)
+                ColorFieldButton(self, row, col, hover_color, color, self.pick_color, erase_bool)
 
     def pick_color(self, color):
         self.color_string.set(color)
 
 #TODO create and place buttons with the respective colors
 class ColorFieldButton(ctk.CTkButton):
-    def __init__(self, parent, row, col, hover_color, color, pick_color):
+    def __init__(self, parent, row, col, hover_color, color, pick_color, erase_bool):
         super().__init__(parent, 
                          text = '', 
                          fg_color = f'#{color}',
@@ -71,24 +79,26 @@ class ColorFieldButton(ctk.CTkButton):
                          command = self.click_handler)
         
         self.grid(row = row, column = col, padx = .4, pady = .4)
-
+        self.erase_bool = erase_bool
         self.pick_color = pick_color
         self.color = color
 
     def click_handler(self): #! will call the pick_color function with the color as arg
        self.pick_color(self.color)
+       self.erase_bool.set(False) #! clicking on color will automatically switch to brush mode
         # self.color_string.set(self.color)
         # print(self.color)
 
 
 class ColorSliderPanel(ctk.CTkFrame):
-    def __init__(self, parent, color_string):
+    def __init__(self, parent, color_string, erase_bool):
         super().__init__(parent)
         self.grid(row = 0, column = 0, sticky = 'news', padx = 5, pady = 5)
 
         #* DATA
         self.color_string = color_string
         self.color_string.trace('w', self.set_color)
+        self.erase_bool = erase_bool
 
         #! Variables that would represent slider position
         self.r_int = ctk.IntVar(value = self.color_string.get()[0])
@@ -119,8 +129,63 @@ class ColorSliderPanel(ctk.CTkFrame):
 
         self.color_string.set(f'{"".join(current_color_list)}')
 
+        self.erase_bool.set(False)
+
     def set_color(self, *args):
         #TODO: make it so when clicking on color, it also updates the slider values
         self.r_int.set(COLOR_RANGE.index(self.color_string.get()[0])) #! Gets the index from the list
         self.g_int.set(COLOR_RANGE.index(self.color_string.get()[1])) 
         self.b_int.set(COLOR_RANGE.index(self.color_string.get()[2])) 
+
+
+class Button(ctk.CTkButton):
+    def __init__(self, parent, image_path, col, func):
+        image = ctk.CTkImage(light_image = Image.open(image_path), dark_image = Image.open(image_path) )
+
+        super().__init__(parent, command = func, text = '', image = image, fg_color = BUTTON_COLOR, hover_color = BUTTON_HOVER_COLOR)
+        self.grid(row = 3, column = col, sticky = 'news', padx = 5, pady = 5)
+
+
+
+#TODO: Create the 3 buttons
+class DrawBrushButton(Button):
+    def __init__(self, parent, erase_bool):
+        super().__init__(parent, image_path = 'images/brush.png', col = 0, func = self.activate_brush)
+        self.erase_bool = erase_bool
+        self.erase_bool.trace('w', self.update_state)
+
+    def update_state(self, *args): #! changes how the button looks if active
+        if not self.erase_bool.get():
+            self.configure(fg_color = BUTTON_ACTIVE_COLOR)
+
+        else: 
+            self.configure(fg_color = BUTTON_COLOR)
+
+    def activate_brush(self):
+        self.erase_bool.set(False)
+
+class EraserButton(Button):
+    def __init__(self, parent, erase_bool):
+        super().__init__(parent, image_path = 'images/eraser.png', col = 1, func  = self.activate_erase)
+        self.erase_bool = erase_bool
+        self.erase_bool.trace('w', self.update_state)
+    
+    def update_state(self, *args): #! changes how button looks is active
+        if self.erase_bool.get():
+            self.configure(fg_color = BUTTON_ACTIVE_COLOR)
+
+        else: 
+            self.configure(fg_color = BUTTON_COLOR)
+
+    def activate_erase(self):
+        self.erase_bool.set(True)
+
+class ClearAllButton(Button):
+    def __init__(self,parent, clear_canvas, erase_bool):
+        super().__init__(parent, image_path = 'images/clear.png', col = 2, func = self.clear_all)
+        self.erase_bool = erase_bool
+        self.clear_canvas = clear_canvas
+
+    def clear_all(self):
+        self.clear_canvas()
+        self.erase_bool.set(False)
