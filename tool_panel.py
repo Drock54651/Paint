@@ -2,7 +2,7 @@
 import customtkinter as ctk
 from settings import *
 from PIL import Image
-
+from tkinter import Canvas
 #! All the erase bool stuff makes it so clicking anything color related automatically switches to brush mode
 
 
@@ -33,12 +33,59 @@ class ToolPanel(ctk.CTkToplevel):
         DrawBrushButton(self, erase_bool)
         EraserButton(self, erase_bool)
         ClearAllButton(self, clear_canvas, erase_bool)
+        BrushPreview(self, color_string, brush_float, erase_bool)
 
     def close_app(self):
         self.parent.quit()
 
+class BrushPreview(Canvas):
+    def __init__(self,parent, color_string, brush_float, erase_bool):
+        super().__init__(parent, bg = BRUSH_PREVIEW_BG, bd = 0, relief= 'ridge', highlightthickness = 0)
+        self.grid(row = 0, column = 1, columnspan = 2, sticky = 'news')
 
+        #* DATA
+        self.color_string = color_string    
+        self.brush_float = brush_float
+        self.erase_bool = erase_bool
 
+        #* CANVAS SETUP
+        self.x = 0
+        self.y = 0
+        self.max_length = 0 #! makes sure radius of the brush preview isnt too big, uses height as its smaller than width
+
+        #* TRACE
+        self.brush_float.trace('w', self.update)
+        self.color_string.trace('w', self.update)
+        self.erase_bool.trace('w', self.update)
+
+        self.bind('<Configure>', self.setup)
+
+    def setup(self, event):
+        self.x = event.width / 2
+        self.y = event.height / 2
+        self.max_length = (event.height / 2) * 0.8
+        self.update()
+
+    def update(self, *args):
+        current_radius = self.max_length * self.brush_float.get()
+
+        self.delete('all') #! clears previous drawn ovals 
+        
+
+        #TODO: update color
+        #TODO: if the eraser is active the color should be the same as the BRUSH_PREVIEW_BG and there should be a black circle
+        color = f'#{self.color_string.get()}' if not self.erase_bool.get() else BRUSH_PREVIEW_BG
+        outline_color = f'#{self.color_string.get()}' if not self.erase_bool.get() else 'black'
+
+        
+        self.create_oval(self.x - current_radius, 
+                         self.y - current_radius, 
+                         self.x + current_radius, 
+                         self.y + current_radius, 
+                         fill = color,
+                         outline = outline_color,
+                         dash = 20)
+        
 class BrushSizeSlider(ctk.CTkFrame):
     def __init__(self, parent, brush_float):
         super().__init__(parent)

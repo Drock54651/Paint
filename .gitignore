@@ -1,3 +1,11 @@
 __pycache__/settings.cpython-311.pyc
 __pycache__/draw_surface.cpython-311.pyc
 __pycache__/tool_panel.cpython-311.pyc
+commented_version/draw_surface.py
+commented_version/main.py
+.gitignore
+commented_version/settings.py
+commented_version/tool_panel.py
+commented_version/__pycache__/draw_surface.cpython-311.pyc
+commented_version/__pycache__/settings.cpython-311.pyc
+commented_version/__pycache__/tool_panel.cpython-311.pyc
